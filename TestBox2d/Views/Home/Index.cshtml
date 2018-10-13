@@ -1,0 +1,25 @@
+﻿
+<div>
+    <canvas id="myCanvas" width="800" height="600" style="border:solid 1px #CCC;">
+        您的浏览器不支持canvas，建议使用最新版的Chrome
+    </canvas>
+
+</div>
+<script src="~/game/lib/Box2D.js"></script>
+<script src="~/game/lib/GlobalVal.js"></script>
+@Scripts.Render("~/gamejs")
+
+<script>
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d"); //获取该canvas的2D绘图环境对象
+
+
+
+    var main = new Main();
+    main.init();
+
+  //  var mouseevent = new MouseEvent2();
+    var contactevent = new ContactEvent();
+
+
+</script>
