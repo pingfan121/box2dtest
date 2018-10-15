@@ -96,7 +96,11 @@ class Main {
         world.SetDebugDraw(debugDraw);
     }
 
-    update() {
+    update()
+     {
+
+
+        ctx.clearRect(0,0,800,600);
 
         world.Step(
             1 / 60   //frame-rate
@@ -120,9 +124,6 @@ class Main {
 
     };
 
-    
-
-
     getxmlDoc(xmlFile) {
         var xmlDoc;
         if (window.ActiveXObject) {
@@ -144,34 +145,165 @@ class Main {
             }
         }
 
-        return xmlDoc;
+        return this.parse2(xmlDoc)
     }
 
-    getVertices(name) {
-        var temp = xmldata.getElementsByTagName("body");
 
-        if (temp != null && temp.length > 0) {
-            var temp2 = temp[0].getElementsByTagName("vertex");
-            if (temp2 != null && temp2.length > 0) {
+    parse(xmlDoc)
+    {
+
+        let data=new Map();
+
+
+        var temp = xmlDoc.getElementsByTagName("body");
+
+         for (let i = 0; i < temp.length; i++) 
+         {
+            var temp2 = temp[i].getElementsByTagName("fixture");
+            var temp3 = temp2[0].getElementsByTagName("polygon");
+
+            var arr2=new Array();
+
+            for (let i = 0; i < temp3.length; i++) 
+            {
+                var temp4 = temp3[i].getElementsByTagName("vertex");
+
                 var arr = new Array();
 
-                for (let i = 0; i < temp2.length; i++) {
-                    let a = new b2Vec2(temp2[i].attributes[0].value/drawScale, temp2[i].attributes[1].value/drawScale);
+                for (let i = 0; i < temp4.length; i++)
+                {
 
-                    if (this.haveItem(arr, a) == false) {
-                        arr.push(a);
+                    let point=new b2Vec2(temp4[i].attributes[0].value/drawScale, temp4[i].attributes[1].value/drawScale);
+                   
+                    if(this.haveItem(arr2,point)==false)
+                    {
+                        arr2.push(point);
                     }
-
+                   
                 }
 
-                return this.arrangeClockwise(arr);
+               
             }
+
+            this.arrangeClockwise(arr2);
+
+            data.set(temp[i].attributes["name"].value,arr2);
+        }
+
+        return data;
+    }
+
+    parse2(xmlDoc)
+    {
+
+        let data=new Map();
+
+        var temp = xmlDoc.getElementsByTagName("body");
+
+         for (let i = 0; i < temp.length; i++) 
+         {
+            var temp2 = temp[i].getElementsByTagName("fixture");
+            var temp3 = temp2[0].getElementsByTagName("polygon");
+
+            var arr2=new Array();
+
+            for (let i = 0; i < temp3.length; i++) 
+            {
+                var temp4 = temp3[i].getElementsByTagName("vertex");
+
+                var arr = new Array();
+
+                for (let i = 0; i < temp4.length; i++)
+                {
+
+                    let point=new b2Vec2(temp4[i].attributes[0].value/drawScale, temp4[i].attributes[1].value/drawScale);
+                   
+                    if(this.haveItem(arr2,point)==false)
+                    {
+                        arr.push(point);
+                    }
+                   
+                }
+
+                arr2.push(arr);
+
+               
+            }
+
+           // this.arrangeClockwise(arr2);
+
+            data.set(temp[i].attributes["name"].value,arr2);
+        }
+
+        return data;
+    }
+
+
+    getVertices(name)
+     {
+
+        if(xmldata.has(name))
+        {
+            return xmldata.get(name);
         }
 
         return null;
 
 
     }
+
+    
+
+
+    // getxmlDoc(xmlFile) {
+    //     var xmlDoc;
+    //     if (window.ActiveXObject) {
+    //         xmlDoc = new ActiveXObject('Microsoft.XMLDOM');//IE
+    //         xmlDoc.async = false;
+    //         xmlDoc.load(xmlFile);
+    //     }
+    //     else if (navigator.userAgent.indexOf("Firefox") > 0) { //火狐
+
+    //         xmlDoc = document.implementation.createDocument('', '', null);
+    //         xmlDoc.load(xmlFile);
+    //     }
+    //     else { //谷歌
+    //         var xmlhttp = new window.XMLHttpRequest();
+    //         xmlhttp.open("GET", xmlFile, false);
+    //         xmlhttp.send(null);
+    //         if (xmlhttp.readyState == 4) {
+    //             xmlDoc = xmlhttp.responseXML.documentElement;
+    //         }
+    //     }
+
+    //     return xmlDoc;
+    // }
+
+    // getVertices(name) {
+    //     var temp = xmldata.getElementsByTagName("body");
+
+    //     if (temp != null && temp.length > 0) {
+    //         var temp2 = temp[0].getElementsByTagName("vertex");
+    //         if (temp2 != null && temp2.length > 0) {
+    //             var arr = new Array();
+
+    //             for (let i = 0; i < temp2.length; i++) {
+    //                 let a = new b2Vec2(temp2[i].attributes[0].value/drawScale, temp2[i].attributes[1].value/drawScale);
+
+    //                 if (this.haveItem(arr, a) == false) {
+    //                     arr.push(a);
+    //                 }
+
+    //             }
+
+    //             return this.arrangeClockwise(arr);
+    //         }
+    //     }
+
+    //     return null;
+
+
+    // }
 
     haveItem(arr, point) {
         let flag = false;
@@ -233,7 +365,6 @@ class Main {
         // 另外一个有用的知识点，行列式值的绝对值是这个三个点组成的三角形面积的两倍
         return x1*y2+x2*y3+x3*y1-y1*x2-y2*x3-y3*x1;
     }
-
 
 
 }

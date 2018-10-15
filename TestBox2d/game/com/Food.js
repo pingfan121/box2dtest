@@ -6,7 +6,7 @@ class Food
         fixDef.density = .5;
         fixDef.friction = 0.4;
         fixDef.restitution = 0.8;
-        fixDef.shape = new b2PolygonShape;
+      
 
        // fixDef.shape.SetAsBox(160/2/drawScale, 143/2/drawScale);
 
@@ -18,14 +18,23 @@ class Food
     //  vs.push(new b2Vec2(159/2/drawScale,142/2/drawScale));
     //  vs.push(new b2Vec2(-159/2/drawScale,142/2/drawScale));
        
-       fixDef.shape.SetAsVector(vs,vs.length);
+     //  fixDef.shape.SetAsVector(vs,vs.length);
 
         var bodyDef = new b2BodyDef;
         bodyDef.type = b2Body.b2_dynamicBody;
         bodyDef.position.Set(width/2,height/2);
 
         let body = world.CreateBody(bodyDef)
-        body.CreateFixture(fixDef);
+
+        vs.forEach(item => {
+            
+            fixDef.shape = new b2PolygonShape;
+            fixDef.shape.SetAsVector(item,item.length);
+            body.CreateFixture(fixDef);
+        });
+
+
+       
 
         this.body=body;
 
@@ -50,83 +59,69 @@ class Food
     update(ctx,body)
     {
 
-        ctx.drawImage(this.img, 0, 0, this.ww, this.hh);
-
-        let fix = body.GetFixtureList();
-
-        if(fix==null)
+        for( let fix=body.GetFixtureList();fix != null;fix=fix.GetNext())
         {
-            return;
+            let shape=fix.GetShape();
+
+            let arr =shape.GetVertices();
+    
+            let angle=body.GetAngle();
+    
+             let position =body.GetPosition();
+    
+             let xx = position.x;
+             let yy = position.y ;
+    
+             let xxxx=body.centerpoint.x* drawScale;
+             let yyyy=body.centerpoint.y* drawScale;
+    
+             let lastangle=body.lastangle;
+    
+             let temppoint2=body.GetWorldPoint(body.centerpoint);
+    
+             
+             ctx.save();
+             /*原点偏移*/
+             ctx.translate(xx* drawScale, yy * drawScale);
+             /*旋转 (弧度)*/
+             ctx.rotate(angle);
+             ctx.beginPath();
+    
+             var startX = arr[0].x * drawScale;
+             var startY = arr[0].y* drawScale;
+             ctx.moveTo(startX, startY);
+     
+             for(var i = 1; i <arr.length; i++) {
+                 var newX = arr[i].x* drawScale;
+                 var newY = arr[i].y* drawScale;
+                 ctx.lineTo(newX, newY);
+             }
+             
+             ctx.closePath();
+             ctx.rotate(-angle);
+            // ctx.fill();
+             ctx.translate(-xx* drawScale, -yy * drawScale);
+             //ctx.restore();
+    
+    
+             //-------------------------------------
+    
+             //ctx.save();
+              ctx.clip();
+              /*原点偏移*/
+              ctx.translate(temppoint2.x* drawScale, temppoint2.y * drawScale);
+              /*旋转 (弧度)*/
+              ctx.rotate(lastangle+angle);
+              ctx.drawImage(this.img, -this.ww/2, -this.hh/2, this.ww, this.hh);
+              ctx.rotate(-lastangle-angle);
+              ctx.translate(-temppoint2.x* drawScale, -temppoint2.y * drawScale);
+              ctx.restore();
         }
 
-        let shape=body.GetFixtureList().GetShape();
-
-        let arr =shape.GetVertices();
-
-        let angle=body.GetAngle();
-
-         let position =body.GetPosition();
-
-         let xx = position.x;
-         let yy = position.y ;
-
-         let xxxx=body.centerpoint.x* drawScale;
-         let yyyy=body.centerpoint.y* drawScale;
-
-         let lastangle=body.lastangle;
-
-         let temppoint2=body.GetWorldPoint(body.centerpoint);
-
-         
-         ctx.save();
-         /*原点偏移*/
-         ctx.translate(xx* drawScale, yy * drawScale);
-         /*旋转 (弧度)*/
-         ctx.rotate(angle);
-         ctx.beginPath();
-
-         var startX = arr[0].x * drawScale;
-         var startY = arr[0].y* drawScale;
-         ctx.moveTo(startX, startY);
- 
-         for(var i = 1; i <arr.length; i++) {
-             var newX = arr[i].x* drawScale;
-             var newY = arr[i].y* drawScale;
-             ctx.lineTo(newX, newY);
-         }
-         
-         ctx.closePath();
-         ctx.rotate(-angle);
-         ctx.fill();
-         ctx.translate(-xx* drawScale, -yy * drawScale);
-         //ctx.restore();
-
-
-         //-------------------------------------
-
-         //ctx.save();
-         ctx.clip();
-          /*原点偏移*/
-          ctx.translate(temppoint2.x* drawScale, temppoint2.y * drawScale);
-          /*旋转 (弧度)*/
-          ctx.rotate(lastangle+angle);
-          ctx.drawImage(this.img, -this.ww/2, -this.hh/2, this.ww, this.hh);
-          ctx.rotate(-lastangle-angle);
-          ctx.translate(-temppoint2.x* drawScale, -temppoint2.y * drawScale);
-         ctx.restore();
-
-
         
 
-
-
-         
-
-        
-         ctx.restore();
-
-         this.drawCircle(body.GetWorldPoint(body.centerpoint),"#ff0000");
-         this.drawCircle(position,"#000000");
+        //  this.drawCircle(body.GetWorldPoint(body.centerpoint),"#ff0000");
+        //  this.drawCircle(position,"#000000");
 
         
 

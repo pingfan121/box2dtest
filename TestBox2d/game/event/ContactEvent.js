@@ -32,6 +32,6 @@ class ContactEvent
       //碰撞完成事件
       postSolve(contact)
       {
-         console.log("碰撞了呀");
+        // console.log("碰撞了呀");
       }
 }
