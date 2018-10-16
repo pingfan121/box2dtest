@@ -14,6 +14,7 @@ namespace TestBox2d
             bundles.Add(new ScriptBundle("~/gamejs").Include(
                       "~/game/com/*.js",
                       "~/game/event/*.js",
+                      "~/game/manager/*.js",
                       "~/game/*.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(

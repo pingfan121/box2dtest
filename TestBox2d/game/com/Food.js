@@ -1,6 +1,6 @@
 class Food
 {
-    constructor()
+    constructor(img)
     {
         var fixDef = new b2FixtureDef;
         fixDef.density = .5;
@@ -8,17 +8,22 @@ class Food
         fixDef.restitution = 0.8;
       
 
-       // fixDef.shape.SetAsBox(160/2/drawScale, 143/2/drawScale);
-
        let vs=main.getVertices("1001");
 
-    //  vs.length=0;
-    //  vs.push(new b2Vec2(-159/2/drawScale,-142/2/drawScale));
-    //  vs.push(new b2Vec2(159/2/drawScale,-142/2/drawScale));
-    //  vs.push(new b2Vec2(159/2/drawScale,142/2/drawScale));
-    //  vs.push(new b2Vec2(-159/2/drawScale,142/2/drawScale));
-       
-     //  fixDef.shape.SetAsVector(vs,vs.length);
+       let temppoints=new Array();
+
+
+        
+       vs.forEach(element => {
+                element.forEach(item => {
+                        if(haveItem(temppoints,item)==false)
+                        {
+                                temppoints.push(item);
+                        }
+                });
+                
+        });
+
 
         var bodyDef = new b2BodyDef;
         bodyDef.type = b2Body.b2_dynamicBody;
@@ -31,29 +36,31 @@ class Food
             fixDef.shape = new b2PolygonShape;
             fixDef.shape.SetAsVector(item,item.length);
             body.CreateFixture(fixDef);
+
+            item.forEach(element => 
+                {
+                    if(haveItem(temppoints,element)==false)
+                    {
+                            temppoints.push(element);
+                    }
+            });
         });
 
-
-       
+        //顺时针排序
+        arrangeClockwise(temppoints);
 
         this.body=body;
 
         body.userdata=this;
         body.update=this.update.bind(this);
 
-        this.img=new Image();
-        this.img.src="image/1001.png";
+        this.img=img;
         this.ww=159;
         this.hh=142;
 
-        body.SetPositionAndAngle(new b2Vec2(width/2,height/2),0);
-
-      //  body.centerpoint=body.GetLocalPoint(body.GetWorldCenter());
         body.centerpoint=new b2Vec2(0,0);
         body.lastangle=0;
 
-        console.log(body);
-        
     }
 
     update(ctx,body)
@@ -118,44 +125,20 @@ class Food
               ctx.restore();
         }
 
-        
-
-        //  this.drawCircle(body.GetWorldPoint(body.centerpoint),"#ff0000");
-        //  this.drawCircle(position,"#000000");
-
-        
-
     }
 
-    getlastcenter(p1,p2)
-    {
+    // drawCircle(origin,color)
+    //  {
 
-        // let a =180/Math.PI * angle;
+    //     let temp =ctx.fillStyle;
 
-        // let x0= (p1.x - p2.x)*Math.cos(a) - (p1.y - p2.y)*Math.sin(a) + p2.x ;
+    //    ctx.fillStyle =color;
+    //    // canvas.graphics.drawCircle(origin.x*worldScale,origin.y*worldScale,5);
 
-        // let y0= (p1.x - p2.x)*Math.sin(a) + (p1.y - p2.y)*Math.cos(a) + p2.y ;
-        
-        // return new b2Vec2(x0,y0);
+    //     ctx.beginPath();
+    //     ctx.arc(origin.x*drawScale,origin.y*drawScale,5,0,2*Math.PI);
+    //     ctx.stroke();
 
-    let x=Math.abs(p1.x-p2.x);
-    let y=Math.abs(p1.y-p2.y);
-    let z=Math.sqrt(x*x+y*y);
-      return Math.asin(y/z)
-    }
-
-    drawCircle(origin,color)
-     {
-
-        let temp =ctx.fillStyle;
-
-       ctx.fillStyle =color;
-       // canvas.graphics.drawCircle(origin.x*worldScale,origin.y*worldScale,5);
-
-        ctx.beginPath();
-        ctx.arc(origin.x*drawScale,origin.y*drawScale,5,0,2*Math.PI);
-        ctx.stroke();
-
-        ctx.fillStyle =temp;
-    };
+    //     ctx.fillStyle =temp;
+    // };
 }

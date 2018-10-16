@@ -7,14 +7,22 @@ let event=null;
 
 let xmldata=null;
 
+let swordmanager=null;
+
+let foodmanager=null;
+
 class Main {
 
     init() {
 
 
         xmldata=this.getxmlDoc("image/test.xml");
+
+        swordmanager=new SwordManager();
+        foodmanager=new FoodManager();
+        //创建地面
+        let ground=new Ground();
        
-        this.createGround();
         this.createDebugDraw();
         setInterval(this.update, 1000 / 60);
 
@@ -23,52 +31,19 @@ class Main {
 
 
 
-        let food=new Food();
+      //  let food=new Food();
+      swordmanager.addOneSword("1changhong");
+      foodmanager.addOneFood("1001");
 
         event=new MouseEvent2();
        
 
-    }
-
-    //创建一个盒子
-    createGround() {
-        var wall1fix = new b2FixtureDef;
-        wall1fix.density = 0.1;
-        wall1fix.friction = 0.1;
-        wall1fix.restitution = 0.2;
-        wall1fix.shape = new b2PolygonShape;
-        wall1fix.shape.SetAsBox(2, height / 2);
-
-
-        let wall1 = new b2BodyDef;
-
-        wall1.type = b2Body.b2_staticBody;
-        wall1.position.x = 2
-        wall1.position.y = height / 2
-
-        world.CreateBody(wall1).CreateFixture(wall1fix);
-
-
-
-
-        wall1fix.shape.SetAsBox(width / 2, 2);
-        wall1.position.x = width / 2
-        wall1.position.y = height - 2
-        world.CreateBody(wall1).CreateFixture(wall1fix);
-
-        wall1fix.shape.SetAsBox(2, height / 2);
-        wall1.position.x = width - 2
-        wall1.position.y = height / 2
-        world.CreateBody(wall1).CreateFixture(wall1fix);
-
-        wall1fix.shape.SetAsBox(width / 2, 2);
-        wall1.position.x = width / 2
-        wall1.position.y = 2
-        world.CreateBody(wall1).CreateFixture(wall1fix);
-
-        
+        setInterval(function(){ swordmanager.addOneSword("1changhong");
+        foodmanager.addOneFood("1001"); }, 10000);
 
     }
+
+    
 
     createBall() {
         var fixDef = new b2FixtureDef;

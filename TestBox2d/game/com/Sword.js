@@ -6,7 +6,7 @@ let h=167/drawScale;
 
 class Sword
 {
-    constructor(imgpath)
+    constructor(img)
     {
         var fixDef = new b2FixtureDef;
         fixDef.density = 0.0001;      //密度
@@ -70,8 +70,7 @@ class Sword
 
          this.body=body;
          this.head=head;
-         this.img=new Image();
-         this.img.src="image/sword/1changhong.png";
+         this.img=img;
 
          body.update=this.update.bind(this);
     }
